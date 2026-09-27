@@ -140,8 +140,16 @@ class ChromiumAutonomousLearner:
         return {
             "status": "SUCCESS",
             "session_ingested_pages": ingested_count,
+            "total_documents": total_corpus_records,
+            "rlvr_pairs": total_rlvr_pairs,
             "total_chromium_corpus_records": total_corpus_records,
             "total_chromium_rlvr_pairs": total_rlvr_pairs,
             "corpus_file": str(self.scraped_file),
             "preference_file": str(self.preference_file),
         }
+
+    def scrape_and_store(self, pages: int = 10, pages_per_domain: int | None = None) -> Dict[str, Any]:
+        """Alias for run_autonomous_session for Kaggle & CLI compatibility."""
+        target_pages = pages if pages_per_domain is None else pages_per_domain * 4
+        return self.run_autonomous_session(max_pages=target_pages)
+
