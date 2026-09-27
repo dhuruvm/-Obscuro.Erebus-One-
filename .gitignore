@@ -1,0 +1,62 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+.env
+.venv/
+venv/
+env/
+
+# PyInstaller
+*.spec
+build/
+dist/
+
+# Datasets (large generated files — re-generated on first run)
+datasets/
+artifacts/
+exports/
+
+# Model weights / checkpoints (too large for git)
+*.bin
+*.pt
+*.pth
+*.ckpt
+*.safetensors
+*.gguf
+*.gguf.part
+*.model
+
+# Logs
+*.log
+logs/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDEs
+.vscode/
+.idea/
+*.suo
+*.user
+
+# Docker
+.docker/
+
+# Compiled C extensions
+*.c
+
+# Coverage
+.coverage
+htmlcov/
+.pytest_cache/
+
+# Distribution
+MANIFEST

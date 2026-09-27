@@ -1,0 +1,78 @@
+version: '3.8'
+
+services:
+  # =========================================================================
+  #  app — Full 32B Foundation Model Pipeline (single full run)
+  # =========================================================================
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: obscuro-erebus-model:32b
+    container_name: erebus_app
+    environment:
+      - PYTHONUNBUFFERED=1
+      - TARGET_PARAMS=32B
+      - DEVICE_PREFERENCE=GPU
+      - CHROMIUM_HEADLESS=1
+    volumes:
+      - ./datasets:/app/datasets
+      - ./artifacts:/app/artifacts
+      - ./exports:/app/exports
+    command: fullrun
+    restart: "no"
+    # GPU runtime — automatically falls back to CPU if no GPU is present
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+
+  # =========================================================================
+  #  worker — Autonomous continuous training + self-browser learning daemon
+  # =========================================================================
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: obscuro-erebus-model:32b
+    container_name: erebus_worker
+    environment:
+      - PYTHONUNBUFFERED=1
+      - TARGET_PARAMS=32B
+      - DEVICE_PREFERENCE=GPU
+      - CHROMIUM_HEADLESS=1
+      - WORKER_INTERVAL=300
+    volumes:
+      - ./datasets:/app/datasets
+      - ./artifacts:/app/artifacts
+      - ./exports:/app/exports
+    command: worker --interval 300
+    restart: unless-stopped
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+
+  # =========================================================================
+  #  learner — Standalone autonomous Chromium browser self-learning daemon
+  # =========================================================================
+  learner:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: obscuro-erebus-model:32b
+    container_name: erebus_learner
+    environment:
+      - PYTHONUNBUFFERED=1
+      - CHROMIUM_HEADLESS=1
+    volumes:
+      - ./datasets:/app/datasets
+      - ./artifacts:/app/artifacts
+    command: chromium_learn --pages 50
+    restart: "no"

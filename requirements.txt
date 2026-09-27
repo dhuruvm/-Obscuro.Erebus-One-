@@ -1,0 +1,6 @@
+numpy>=1.26
+click>=8.1
+rich>=13.0
+psutil>=5.9
+# torch installed separately in Dockerfile with CUDA or CPU wheel
+# nemo_toolkit optional — only loaded when NeMo adapter is active
